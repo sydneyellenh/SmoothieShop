@@ -5,8 +5,8 @@ apply plugin: 'application'
 mainClassName = "org.elevenfifty.smoothie.Main"
 
 jar {
-    baseName = 'java301'
-    version =  '0.1.0'
+    baseName = 'java202'
+    version =  '0.1.1'
 }
 
 eclipse {
