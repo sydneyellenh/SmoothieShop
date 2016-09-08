@@ -6,7 +6,7 @@ mainClassName = "org.elevenfifty.smoothie.Main"
 
 jar {
     baseName = 'java202'
-    version =  '0.1.1'
+    version =  '0.1.2'
 }
 
 eclipse {
