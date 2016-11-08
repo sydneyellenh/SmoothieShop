@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.elevenfifty.smoothie.beans.Recipe;
 import org.elevenfifty.smoothie.decoratored.beans.Smoothie;
-import org.springframework.context.annotation.Configuration;
+
 
 public class Main {
 	private static final Logger logger = Logger.getLogger(Main.class);
