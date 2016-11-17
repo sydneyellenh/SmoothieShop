@@ -48,4 +48,10 @@ public class Recipe implements Item {
 	public void setIngredients(List<Ingredient> ingredients) {
 		this.ingredients = ingredients;
 	}
+
+	@Override
+	public void consumeIngredients() {
+		// TODO Auto-generated method stub
+		
+	}
 }
