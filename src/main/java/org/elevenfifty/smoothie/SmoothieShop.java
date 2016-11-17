@@ -6,13 +6,14 @@ import org.elevenfifty.smoothie.beans.Recipe;
 import org.elevenfifty.smoothie.decoratored.beans.Smoothie;
 import org.elevenfifty.smoothie.util.PrettyPrinter;
 
-public class Main {
+public class SmoothieShop {
 	public static void main(String[] args) throws IOException {
 		Configuration config = Configuration.configure("recipes.csv", "ingredients.csv");
 
 		// Recipe Example
 		Recipe r = config.getRecipe("Best Smoothie");
 		PrettyPrinter.print(r);
+		
 		
 		
 
@@ -23,7 +24,11 @@ public class Main {
 		
 		Browser browser = new Browser(config);
 		browser.displayRecipes();
-		PrettyPrinter.print(browser.readRecipe());
+		Recipe selectedRecipe = browser.readRecipe();
+		selectedRecipe.consumeIngredients();
+		PrettyPrinter.print(selectedRecipe);
+
+		
 		
 	}
 

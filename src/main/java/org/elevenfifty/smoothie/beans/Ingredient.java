@@ -10,6 +10,7 @@ public class Ingredient {
 	protected String name;
 	protected Type type;
 	protected double cost = 0d;
+	protected int qty = 0;
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -33,8 +34,10 @@ public class Ingredient {
 
 	@Override
 	public String toString() {
-		return this.type + " " + this.name;
+		return String.format("%s %s (%d on hand)", type, name, qty);
+//		return this.type + " " + this.name;
 	}
+
 
 	public String getName() {
 		return name;
@@ -59,4 +62,14 @@ public class Ingredient {
 	public void setType(Type type) {
 		this.type = type;
 	}
+
+	public int getQty() {
+		return qty;
+	}
+
+	public void setQty(int qty) {
+		this.qty = qty;
+	}
+	
+	
 }
