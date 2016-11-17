@@ -1,63 +1,104 @@
 package org.elevenfifty.smoothie;
 
-import java.io.IOException;
-import java.util.InputMismatchException;
-
+import static java.lang.System.out;
+import static java.util.Arrays.asList;
+import static org.elevenfifty.smoothie.Configuration.configure;
+import static org.elevenfifty.smoothie.util.Inventory.consumeIngredients;
 import static org.elevenfifty.smoothie.util.Inventory.hasSufficientInventory;
+import static org.elevenfifty.smoothie.util.PrettyPrinter.prettyPrint;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.elevenfifty.smoothie.beans.Recipe;
-import org.elevenfifty.smoothie.decoratored.beans.Smoothie;
-import org.elevenfifty.smoothie.util.PrettyPrinter;
-import org.elevenfifty.smoothie.Browser;
 
-public class SmoothieShoppe {
+public class SmoothieShoppe implements Runnable {
+
 	public static void main(String[] args) throws IOException {
-		Configuration config = Configuration.configure("recipes.csv", "ingredients.csv");
+		new SmoothieShoppe(configure("recipes.csv", "ingredients.csv")).run();
+	}
 
-//		// Recipe Example
-//		Recipe r = config.getRecipe("Best Smoothie");
-//		PrettyPrinter.print(r);
-//
-//		// Decorator Pattern Example
-//		Smoothie s = new Smoothie(config.getIngredient("Orange"));
-//		s = new Smoothie(config.getIngredient("Banana"), s);
-//		PrettyPrinter.print(s);
-		
-		Browser browser = new Browser(config);
-//		browser.displayRecipes();
-//		Recipe selectedRecipe = browser.readRecipe();
-//		selectedRecipe.consumeIngredients();
-//		PrettyPrinter.print(selectedRecipe);
-	
-	
-	// Recipe Example
-	/*
-		* Recipe r = config.getRecipe("Best Smoothie"); r.consumeIngredients();
-		* PrettyPrinter.print(r);
-		*/
+	private final Configuration config;
+	private final Browser browser;
+	private final List<Recipe> cart = new ArrayList<>();
 
-		// Decorator Pattern Example
-		/*
-		* Smoothie s = new Smoothie(config.getIngredient("Orange")); s = new
-		* Smoothie(config.getIngredient("Banana"), s); s.consumeIngredients();
-		* PrettyPrinter.print(s);
-		*/
-//	Browser browser = new Browser(config);
-		try {
-			while (true) {
-				browser.displayRecipes();
-				Recipe selectedRecipe = browser.readRecipe();
-	
-				if (hasSufficientInventory(selectedRecipe)) {
-					selectedRecipe.consumeIngredients();
-					PrettyPrinter.print(selectedRecipe);
-				} else {
-					System.out.println("Insufficient Inventory");
-				}
+	public SmoothieShoppe(Configuration config) {
+		this.config = config;
+		this.browser = new Browser(config);
+	}
+
+	@Override
+	public void run() {
+		out.println();
+		out.println("** Smoothie Shoppe **");
+
+		while (true) {
+			switch (menu()) {
+			case 'b':
+				browse();
+				break;
+			case 'm':
+				makeSmoothies();
+				break;
+			case 'q':
+				return;
 			}
-		} catch (InputMismatchException e) {
-			// Non-integer entered
+
+		}
+	}
+
+	private char menu() {
+		out.println();
+		out.println("Application Menu:");
+		out.println("\t[b] Browse Smoothies");
+		out.println("\t[m] Make Smoothies");
+		out.println("\t[q] Quit");
+		out.println();
+		out.print("Select an option: ");
+
+		while (true) {
+			String choice = config.getScanner().next();
+			if (asList("b", "m", "q").stream().anyMatch(e -> e.equals(choice))) {
+				return choice.charAt(0);
+			}
+			out.println("Invalid option");
 		}
 
 	}
-}
+
+	private void showCart() {
+		out.println();
+		out.println("Selected Smoothies:");
+		for (Recipe r : cart) {
+			out.println("\t" + r.getName());
+		}
+	}
+
+	private void browse() {
+		browser.displayRecipes();
+		Recipe selectedRecipe = browser.readRecipe();
+
+		if (hasSufficientInventory(selectedRecipe)) {
+			cart.add(selectedRecipe);
+			consumeIngredients(selectedRecipe);
+			showCart();
+		} else {
+			out.println("Insufficient Inventory");
+		}
+	}
+
+	private void makeSmoothies() {
+		if(cart.isEmpty()) {
+			out.println();
+			out.println("No smoothies selected!");
+			return;
+		}
+		for (Recipe r : cart) {
+			prettyPrint(r);
+		}
+		cart.clear();
+	}
+
+}	
+
